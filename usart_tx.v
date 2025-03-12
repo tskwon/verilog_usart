@@ -3,7 +3,8 @@
 module uart_tx (
     input wire clk,        // System clock
     input wire reset,      // Reset signal
-    input wire tx_start,   // Start signal (스위치로 사용)
+    input wire rx_done,
+    input wire tx_start,   // Start signal
     input wire [7:0] tx_data, // Data to transmit
     output wire [7:0] LED,   // Data indicator LED
     output wire reset_LED,  // Reset indicator LED
@@ -12,7 +13,7 @@ module uart_tx (
     output reg tx_ready    // Transmission complete signal
 );
 
-    parameter TX_COUNT = 1; // 전송할 데이터 개수 설정
+    parameter TX_COUNT = 1; 
     
     // Baud rate settings
     parameter BAUD_RATE = 9600;
@@ -26,12 +27,12 @@ module uart_tx (
     parameter STOP  = 2'b11;
     
     reg [1:0] current_state, next_state;
-    reg tx_active; // 전송 중인지 확인하는 플래그
+    reg tx_active; 
     
     reg [15:0] clk_count;
     reg [3:0] bit_index;
-    reg [7:0] shift_reg; // Stop Bit 제거, 8비트 데이터만 저장
-    reg [3:0] tx_sent_count; // 전송된 데이터 개수 카운트
+    reg [7:0] shift_reg; 
+    reg [3:0] tx_sent_count; 
     
     // Assign input indicators
     assign LED = tx_data;
@@ -39,8 +40,8 @@ module uart_tx (
     assign tx_start_LED = tx_start;
     
     // State transition logic
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or posedge reset or posedge rx_done) begin
+        if (reset || rx_done) begin
             current_state <= IDLE;
             clk_count <= 0;
             bit_index <= 0;
@@ -85,15 +86,10 @@ module uart_tx (
                 end
                 STOP: begin
                     tx <= 1'b1;                // Stop bit
-//                    tx_active <= 1'b0;
-//                    tx_sent_count <= tx_sent_count + 1;
                     if (clk_count == BIT_PERIOD - 1) begin
                         clk_count <= 0;
                         tx_sent_count <= tx_sent_count + 1;
                         tx_active <= 1'b0;
-//                        if (tx_sent_count == TX_COUNT) begin
-//                            tx_active <= 1'b0;
-//                        end
                         end else begin
                             clk_count <= clk_count + 1;
                         end
@@ -126,7 +122,6 @@ module uart_tx (
             
             STOP: begin
                 if (clk_count == BIT_PERIOD - 1)
-//                    next_state = (tx_sent_count + 1 < TX_COUNT) ? START : IDLE;
                       next_state = IDLE;
                 else
                     next_state = STOP;

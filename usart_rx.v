@@ -12,8 +12,9 @@ module usart_rx(
     parameter BAUD_RATE = 9600;
     parameter CLOCK_FREQ = 100_000_000; 
     parameter BIT_PERIOD = CLOCK_FREQ / BAUD_RATE;
-    parameter HALF_BIT_PERIOD = BIT_PERIOD / 2; // 추가된 값
+    parameter HALF_BIT_PERIOD = BIT_PERIOD / 2; 
     
+    // State Machine
     parameter IDLE  = 2'b00;
     parameter START = 2'b01;
     parameter DATA  = 2'b10;
@@ -43,7 +44,7 @@ module usart_rx(
                     next_state = IDLE;
             end
             START: begin
-                if (bit_timer >= HALF_BIT_PERIOD - 1) // **HALF_BIT_PERIOD에서 DATA 상태로 이동**
+                if (bit_timer >= HALF_BIT_PERIOD - 1) // **move to DATA state from HALF_BIT_PERIOD **
                     next_state = DATA;
                 else
                     next_state = START;
@@ -79,14 +80,14 @@ module usart_rx(
                     rx_done <= 0;
                 end
                 START: begin
-                    if (bit_timer < HALF_BIT_PERIOD - 1) // **HALF_BIT_PERIOD에서 샘플링 대기**
+                    if (bit_timer < HALF_BIT_PERIOD - 1) // **wait an sampling from HALF_BIT_PERIOD**
                         bit_timer <= bit_timer + 1;
                     else
                         bit_timer <= 0; // Reset timer for DATA state
                 end
                 DATA: begin
                     if (bit_timer >= BIT_PERIOD - 1) begin
-                        shift_reg[bit_index] <= rx; // **샘플링 위치 조정**
+                        shift_reg[bit_index] <= rx; // **1bit receive**
                         bit_index <= bit_index + 1;
                         bit_timer <= 0;
                     end else begin
