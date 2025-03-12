@@ -17,14 +17,12 @@ The project consists of the following main modules:
 - **Parallel Communication**: Sends data simultaneously over multiple lines.
 
 ![Serial vs Parallel Communication Diagram](images/communication.png)  
-*Recommended size: 600x300 pixels for clarity and readability on GitHub.*
 
 ## What is USART?
 A **USART** is a serial communication interface that supports both **synchronous** and **asynchronous** communication methods.
 
 ## How Does It Work?
 ![USART Communication Diagram](images/usart.png)  
-*Recommended size: 600x400 pixels to clearly display the waveform.*
 
 1. **Idle State**: The line remains high (logic `1`) when no data is being transmitted.
 2. **Start State**: The line transitions to low (logic `0`) to signal the beginning of data transmission.
@@ -52,7 +50,7 @@ To set the correct baud rate:
 
 ## USART Receiver (`usart_rx`)
 ![USART Receiver Diagram](images/usart_rx.png)  
-*Recommended size: 600x400 pixels for waveform clarity.*
+
 
 ### State Machine
 - **Idle State**: Line is high (`1`).
@@ -67,7 +65,7 @@ To set the correct baud rate:
 
 ## USART Transmitter (`usart_tx`)
 ![USART Communication Diagram](images/usart.png)  
-*Recommended size: 600x400 pixels for waveform clarity.*
+
 
 ### State Machine
 - **Idle State**: Line is high (`1`).
