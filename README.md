@@ -75,3 +75,9 @@ To set the correct baud rate:
 
 ### Transmission Timing
 - The transmitter uses a fixed count of **10416 clock cycles** per bit to match the 9600 bps baud rate.
+
+
+## Block Diagram - vivado
+- this is a block diagram to test a usart_rx, usart_tx
+![USART Communication Diagram](images/block_diagram.png)  
+
